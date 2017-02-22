@@ -3,7 +3,7 @@ var gutil = require("gulp-util"),
     fs = require("fs"),
     path = require("path");
 
-module.exports = function(options) {
+module.exports = function(options, override) {
     options = options || {};
     return through.obj(function(file, enc, cb) {
         if (file.isNull()) {
@@ -26,7 +26,11 @@ module.exports = function(options) {
         variable = variable.join("\n");
         // Return file
         var str = file.contents.toString('utf8');
-        file.contents = new Buffer(variable + str);
+        if (override) {
+            file.contents = new Buffer(str + variable);
+        } else {
+            file.contents = new Buffer(variable + str);
+        }
         cb(null, file);
     });
 };
